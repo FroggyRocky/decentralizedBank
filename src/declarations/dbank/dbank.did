@@ -1,0 +1,7 @@
+service : {
+  checkBalance: () -> (float64) query;
+  compound: () -> () oneway;
+  deduct: (float64) -> (float64);
+  greet: (text) -> () oneway;
+  topUp: (float64) -> (float64);
+}

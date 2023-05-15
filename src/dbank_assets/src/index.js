@@ -1,19 +1,30 @@
-import { dbank } from "../../declarations/dbank";
+import { dbank } from '../../declarations/dbank/index'
+const form = document.querySelector('form')
+const funds = document.querySelector('#value')
+const btn = document.querySelector('#submit-btn')
+const topUpAmount = document.querySelector('#input-amount')
+const withdrawAmount = document.querySelector('#withdrawal-amount')
 
-document.querySelector("form").addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const button = e.target.querySelector("button");
 
-  const name = document.getElementById("name").value.toString();
+form.addEventListener('submit', async (e) => {
+e.preventDefault()
+btn.setAttribute('disabled', true)
+if(topUpAmount.value.length > 0) {
+await dbank.topUp(parseFloat(topUpAmount.value))
+} else if (withdrawAmount.value.length > 0) {
+await dbank.deduct(parseFloat(withdrawAmount.value))
+} else {
+    return;
+}
+await updateBlance()
+btn.removeAttribute('disabled')
+})
 
-  button.setAttribute("disabled", true);
 
-  // Interact with foo actor, calling the greet method
-  const greeting = await dbank.greet(name);
-
-  button.removeAttribute("disabled");
-
-  document.getElementById("greeting").innerText = greeting;
-
-  return false;
-});
+async function updateBlance() {
+    const currentFunds = await dbank.checkBalance();
+    funds.innerHTML = parseFloat(currentFunds.toFixed(2))
+    topUpAmount.value =  ""
+    withdrawAmount.value = ""
+}
+updateBlance()
